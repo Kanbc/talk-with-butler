@@ -5,3 +5,4 @@ pandas
 scipy
 stemming
 sklearn
+nltk
