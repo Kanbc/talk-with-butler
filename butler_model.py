@@ -1,10 +1,8 @@
 import numpy as np
-import numpy as np
 import pandas as pd
-import numpy as np
 import re
 from scipy import sparse
-from stemming.porter2 import stem
+from nltk.stem import PorterStemmer
 from sklearn.metrics.pairwise import cosine_similarity
 from train_script import topicData
 from train_script import eventData
@@ -41,8 +39,8 @@ def processTextOpt(email_contents):
     
     non_cha_alp = re.compile("[^a-zA-Z0-9]+")
     email_contents = re.sub(non_cha_alp, ' ', email_contents)
-    
-    words = [stem(word) for word in email_contents.split(" ") if len(word) > 0]
+    ps = PorterStemmer()
+    words = [ps.stem(word) for word in email_contents.split(" ") if len(word) > 0]
     
     word_indices = []
     for w in words:

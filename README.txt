@@ -4,3 +4,7 @@ $ FLASK_APP=api.py flask run
 Access Project by 
 [POST] - 127.0.0.1:5000/butler
 [GET] - 127.0.0.1:5000/train_butler
+
+Requirement
+- python 3.x
+- pip install Flask
