@@ -9,6 +9,7 @@ from train_script import eventData
 from train_script import callData
 from train_script import waterData
 from train_script import visitorData
+from train_script import packageData
 
 def getVocabListOpt():
     vocabs = pd.read_csv('vocab_opt.csv')
@@ -61,6 +62,7 @@ def getInitialFeatureVectorOpt():
     call = callData()
     water = waterData()
     visitor = visitorData()
+    package = packageData()
     # Topic
     topic_features = np.zeros(len(getVocabListOpt()))
     for i in range(len(topic)):
@@ -85,14 +87,20 @@ def getInitialFeatureVectorOpt():
     visitor_features = np.zeros(len(getVocabListOpt()))
     for i in range(len(visitor)):
         visitor_features = visitor_features + textFeaturesOpt(processTextOpt(visitor[i]))
+
+    # Package
+    package_features = np.zeros(len(getVocabListOpt()))
+    for i in range(len(package)):
+        package_features = package_features + textFeaturesOpt(processTextOpt(package[i]))
     
     topic_features = (topic_features >= 1).astype(int)
     event_features = (event_features >= 1).astype(int)
     call_features = (call_features >= 1).astype(int)
     water_features = (water_features >= 1).astype(int)
     visitor_features = (visitor_features >= 1).astype(int)
+    package_features = (package_features >= 1).astype(int)
     
-    return np.array([topic_features, event_features, call_features, water_features, visitor_features])
+    return np.array([topic_features, event_features, call_features, water_features, visitor_features, package_features])
 
 def most_similarity(initial_features,text_feature):
     A = np.vstack((initial_features,text_feature))
@@ -112,8 +120,10 @@ def most_similarity(initial_features,text_feature):
             return "call"
         elif(menu == 3):
             return "water"
-        else:
+        elif(menu == 4):
             return "visitor"
+        else:
+            return "package"
 
 def butler_menu(text):
     answer = most_similarity(getInitialFeatureVectorOpt(),textFeaturesOpt(processTextOpt(text)))

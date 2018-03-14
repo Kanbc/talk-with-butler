@@ -26,6 +26,10 @@ def visitorData():
     visitor = pd.read_csv('training_data/visitor.csv',header=None).values.T[0]
     return visitor
 
+def packageData():
+    package = pd.read_csv('training_data/package.csv',header=None).values.T[0]
+    return package
+
 # ----- English vocab list -----
 def getVocabList():
     vocabs = pd.read_csv('vocab2.csv')
@@ -72,6 +76,7 @@ def getInitialFeatureVectoc():
     call = callData()
     water = waterData()
     visitor = visitorData()
+    package = packageData()
     # Topic
     topic_features = np.zeros(len(getVocabList()))
     for i in range(len(topic)):
@@ -97,13 +102,19 @@ def getInitialFeatureVectoc():
     for i in range(len(visitor)):
         visitor_features = visitor_features + textFeatures(processText(visitor[i]))
     
+    # Package
+    package_features = np.zeros(len(getVocabList()))
+    for i in range(len(package)):
+        package_features = package_features + textFeatures(processText(package[i]))
+    
     topic_features = (topic_features >= 1).astype(int)
     event_features = (event_features >= 1).astype(int)
     call_features = (call_features >= 1).astype(int)
     water_features = (water_features >= 1).astype(int)
     visitor_features = (visitor_features >= 1).astype(int)
+    package_features = (package_features >= 1).astype(int)
     
-    return np.array([topic_features, event_features, call_features, water_features, visitor_features])
+    return np.array([topic_features, event_features, call_features, water_features, visitor_features, package_features])
 
 def createVocabOpt():
     vocabs = pd.read_csv('vocab2.csv')
@@ -113,6 +124,7 @@ def createVocabOpt():
     call = callData()
     water = waterData()
     visitor = visitorData()
+    package = packageData()
 
     topic_features = np.zeros(len(vocabs))
     for i in range(len(topic)):
@@ -134,7 +146,11 @@ def createVocabOpt():
     for i in range(len(visitor)):
         visitor_features = visitor_features + textFeatures(processText(visitor[i]))
     
-    all_words = topic_features + event_features + call_features + water_features + visitor_features
+    package_features = np.zeros(len(vocabs))
+    for i in range(len(package)):
+        package_features = package_features + textFeatures(processText(package[i]))
+    
+    all_words = topic_features + event_features + call_features + water_features + visitor_features + package_features
     vocabs = vocabs[all_words >= 1]
     vocabs['word'] = vocabs['0']
     del vocabs['0']
