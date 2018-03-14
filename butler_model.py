@@ -109,7 +109,7 @@ def most_similarity(initial_features,text_feature):
     text_vs_initial = similarities[similarities.shape[0]-1,0:similarities.shape[1]-1]
     prob_of_menu = np.max(text_vs_initial)
     menu = np.argmax(text_vs_initial)
-    if(prob_of_menu < 0.35):
+    if(prob_of_menu < 0.30):
         return "other"
     else:
         if(menu == 0):
