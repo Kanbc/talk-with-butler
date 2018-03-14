@@ -152,6 +152,9 @@ def most_similarity(initial_features,text_feature):
 
 def butler_menu(text):
     text_vector = textFeaturesOpt(processTextOpt(text))
-    text_unit_vector = text_vector/LA.norm(text_vector)
+    if LA.norm(text_vector) == 0:
+        text_unit_vector = text_vector
+    else:
+        text_unit_vector = text_vector/LA.norm(text_vector)
     answer = most_similarity(getInitialFeatureVectorOpt(),text_unit_vector)
     return answer
