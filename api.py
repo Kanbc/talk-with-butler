@@ -9,7 +9,7 @@ app = Flask(__name__)
 @app.route("/butler", methods=['GET', 'POST'])
 def butler():
     if request.method == 'POST':
-        return jsonify({'menu': butler_menu(request.form['text']) })
+        return butler_menu(request.form['text'])
     else:
         return "Please use POST method to call butler!."
 

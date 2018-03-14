@@ -11,6 +11,7 @@ from train_script import waterData
 from train_script import visitorData
 from train_script import packageData
 from numpy import linalg as LA
+from flask.json import jsonify
 
 def getVocabListOpt():
     vocabs = pd.read_csv('vocab_opt.csv')
@@ -141,14 +142,14 @@ def most_similarity(initial_features,text_feature):
     first_prob = np.max(text_vs_initial)
     second_prob = second_largest(text_vs_initial)
     if(first_prob < 0.3):
-        return ["other"]
+        return jsonify({'menu': ["other"], 'score': { 'topic': text_vs_initial[0],'event': text_vs_initial[1], 'call': text_vs_initial[2], 'water': text_vs_initial[3], 'visitor': text_vs_initial[4], 'package': text_vs_initial[5]} })
 
     first_position = np.argmax(text_vs_initial)
     second_position = np.where(text_vs_initial==second_prob)[0][0]
     if(first_prob - second_prob < 0.2):
-        return [menu_name(first_position),menu_name(second_position)]
+        return jsonify({'menu': [menu_name(first_position),menu_name(second_position)], 'score': { 'topic': text_vs_initial[0],'event': text_vs_initial[1], 'call': text_vs_initial[2], 'water': text_vs_initial[3], 'visitor': text_vs_initial[4], 'package': text_vs_initial[5]} })
     else:
-        return [menu_name(first_position)]
+        return jsonify({'menu': [menu_name(first_position)], 'score': { 'topic': text_vs_initial[0],'event': text_vs_initial[1], 'call': text_vs_initial[2], 'water': text_vs_initial[3], 'visitor': text_vs_initial[4], 'package': text_vs_initial[5]} })
 
 def butler_menu(text):
     text_vector = textFeaturesOpt(processTextOpt(text))
