@@ -10,6 +10,7 @@ from train_script import callData
 from train_script import waterData
 from train_script import visitorData
 from train_script import packageData
+from numpy import linalg as LA
 
 def getVocabListOpt():
     vocabs = pd.read_csv('vocab_opt.csv')
@@ -93,12 +94,12 @@ def getInitialFeatureVectorOpt():
     for i in range(len(package)):
         package_features = package_features + textFeaturesOpt(processTextOpt(package[i]))
     
-    topic_features = (topic_features >= 1).astype(int)
-    event_features = (event_features >= 1).astype(int)
-    call_features = (call_features >= 1).astype(int)
-    water_features = (water_features >= 1).astype(int)
-    visitor_features = (visitor_features >= 1).astype(int)
-    package_features = (package_features >= 1).astype(int)
+    topic_features = topic_features/LA.norm(topic_features)
+    event_features = event_features/LA.norm(event_features)
+    call_features = call_features/LA.norm(call_features)
+    water_features = water_features/LA.norm(water_features)
+    visitor_features = visitor_features/LA.norm(visitor_features)
+    package_features = package_features/LA.norm(package_features)
     
     return np.array([topic_features, event_features, call_features, water_features, visitor_features, package_features])
 
@@ -150,5 +151,7 @@ def most_similarity(initial_features,text_feature):
         return [menu_name(first_position)]
 
 def butler_menu(text):
-    answer = most_similarity(getInitialFeatureVectorOpt(),textFeaturesOpt(processTextOpt(text)))
+    text_vector = textFeaturesOpt(processTextOpt(text))
+    text_unit_vector = text_vector/LA.norm(text_vector)
+    answer = most_similarity(getInitialFeatureVectorOpt(),text_unit_vector)
     return answer
