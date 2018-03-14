@@ -102,28 +102,54 @@ def getInitialFeatureVectorOpt():
     
     return np.array([topic_features, event_features, call_features, water_features, visitor_features, package_features])
 
+def menu_name(position):
+    if(position == 0):
+        return "topic"
+    elif(position == 1):
+        return "event"
+    elif(position == 2):
+        return "call"
+    elif(position == 3):
+        return "water"
+    elif(position == 4):
+        return "visitor"
+    elif(position == 5):
+        return "package"
+    else:
+        return "other"
+
+def second_largest(numbers):
+    count = 0
+    m1 = m2 = float('-inf')
+    for x in numbers:
+        count += 1
+        if x > m2:
+            if x >= m1:
+                m1, m2 = x, m1            
+            else:
+                m2 = x
+    return m2 if count >= 2 else None
+
+
 def most_similarity(initial_features,text_feature):
     A = np.vstack((initial_features,text_feature))
     A_sparse = sparse.csr_matrix(A)
     similarities = cosine_similarity(A_sparse)
     text_vs_initial = similarities[similarities.shape[0]-1,0:similarities.shape[1]-1]
-    prob_of_menu = np.max(text_vs_initial)
-    menu = np.argmax(text_vs_initial)
-    if(prob_of_menu < 0.30):
-        return "other"
+    print('pairwise dense output: {}\n'.format(text_vs_initial))
+
+    first_prob = np.max(text_vs_initial)
+    second_prob = second_largest(text_vs_initial)
+    if(first_prob < 0.3):
+        return ["other"]
+
+    first_position = np.argmax(text_vs_initial)
+    second_position = np.where(text_vs_initial==second_prob)[0][0]
+    print(first_prob - second_prob)
+    if(first_prob - second_prob < 0.1):
+        return [menu_name(first_position),menu_name(second_position)]
     else:
-        if(menu == 0):
-            return "topic"
-        elif(menu == 1):
-            return "event"
-        elif(menu == 2):
-            return "call"
-        elif(menu == 3):
-            return "water"
-        elif(menu == 4):
-            return "visitor"
-        else:
-            return "package"
+        return [menu_name(first_position)]
 
 def butler_menu(text):
     answer = most_similarity(getInitialFeatureVectorOpt(),textFeaturesOpt(processTextOpt(text)))
