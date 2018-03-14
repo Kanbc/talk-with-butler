@@ -136,7 +136,6 @@ def most_similarity(initial_features,text_feature):
     A_sparse = sparse.csr_matrix(A)
     similarities = cosine_similarity(A_sparse)
     text_vs_initial = similarities[similarities.shape[0]-1,0:similarities.shape[1]-1]
-    print('pairwise dense output: {}\n'.format(text_vs_initial))
 
     first_prob = np.max(text_vs_initial)
     second_prob = second_largest(text_vs_initial)
@@ -145,7 +144,6 @@ def most_similarity(initial_features,text_feature):
 
     first_position = np.argmax(text_vs_initial)
     second_position = np.where(text_vs_initial==second_prob)[0][0]
-    print(first_prob - second_prob)
     if(first_prob - second_prob < 0.2):
         return [menu_name(first_position),menu_name(second_position)]
     else:
